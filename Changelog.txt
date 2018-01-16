@@ -1,0 +1,8 @@
+1/15/18: v2.0
+Fork of deggansMarks
+Adaptive pull timer length
+Break timer
+
+1/16/18: v2.01
+Fixed several LUA errors
+ReadyCheck/Pull/Break frame border and background now properly hide along with the other frames
