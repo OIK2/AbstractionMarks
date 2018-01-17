@@ -21,11 +21,15 @@ Defaults = {
 	flareScale = 1,
 	buttonScale = 1,
 	buttonsEnabled = true,
+	partyTime = 5,
+	raidTime = 10,
+	breakTime = 5,
 }
 
 local isPullTimerStarted = false
 local isBreakTimerStarted = false
 local playerOutOfCombat = true
+local last = nil
 _,_,_,isEnabledDBM,_,_,_ = GetAddOnInfo("DBM-Core")
 _,_,_,isEnabledBigWigs,_,_,_ = GetAddOnInfo("BigWigs")
 _,_,_,isEnabledVEM,_,_,_ = GetAddOnInfo("VEM-Core")
@@ -264,8 +268,8 @@ AM_FlareClear:SetAttribute("macrotext1", "/click CompactRaidFrameManagerDisplayF
 -------------------------------------------------------
 
 AM_Console_mainFrame = CreateFrame("Frame", "AM_Console_mainFrame", UIParent)
-AM_Console_mainFrame:SetBackdrop(borderlessBackdrop)
-AM_Console_mainFrame:SetBackdropColor(0,0,0,0)
+AM_Console_mainFrame:SetBackdrop(defaultBackdrop)
+AM_Console_mainFrame:SetBackdropColor(0.1,0.1,0.1,0.1,0.7)
 AM_Console_mainFrame:EnableMouse(true)
 AM_Console_mainFrame:SetMovable(true)
 AM_Console_mainFrame:SetSize(81,84)
@@ -325,10 +329,10 @@ AM_Break:SetScript("OnMouseUp", function(self) AM_Break:SetNormalTexture("Interf
 function AM_pullCommon()
 	if playerOutOfCombat == true then
 		if IsInRaid() then
-			countdownTime = "10"
+			countdownTime = Defaults.raidTime
 			chatChan = "RAID_WARNING"
 		elseif not IsInRaid() then
-			countdownTime = "5"
+			countdownTime = Defaults.partyTime
 			chatChan = "PARTY"
 		end
 		if isPullTimerStarted == true then
@@ -354,9 +358,9 @@ function AM_breakCommon()
 			SendChatMessage("BREAK TIMER CANCELLED", chatChan)
 			isBreakTimerStarted = false
 		elseif isBreakTimerStarted == false then
-			AM_Break:SetAttribute("macrotext1", textPrefix.."break 5")
+			AM_Break:SetAttribute("macrotext1", textPrefix.."break "..Defaults.breakTime)
 			isBreakTimerStarted = true
-			breakTimer = C_Timer.NewTimer(300, AM_resetBreak)
+			breakTimer = C_Timer.NewTimer(math.floor((Defaults.breakTime*60)), AM_resetBreak)
 		end
 	end
 end
@@ -387,6 +391,20 @@ function AM_lockToggle()
     if Defaults.locked then AM_unlock("main") else AM_lock("main") end
 end   
 
+function AM_time(self, DB)
+	if self == nil then return end
+	if DB == "party" then
+		Defaults.partyTime = (self:GetValue())
+		getglobal(self:GetName().."Text"):SetText("Party Pull Time: "..math.floor(Defaults.partyTime).."sec")
+	elseif DB == "raid" then
+		Defaults.raidTime = (self:GetValue())
+		getglobal(self:GetName().."Text"):SetText("Raid Pull Time: "..math.floor(Defaults.raidTime).."sec")
+	elseif DB == "break" then
+		Defaults.breakTime = (self:GetValue())
+		getglobal(self:GetName().."Text"):SetText("Break Time: "..math.floor(Defaults.breakTime).."min")
+	end
+end
+
 function AM_scale(self, DB)
 	if self == nil then return end
 	if DB == "main" then
@@ -408,6 +426,8 @@ function AM_backgroundChange()
 		AM_FlareFrame:SetBackdropBorderColor(0,0,0,0)
 		AM_ConsoleFrame:SetBackdropColor(0,0,0,0)
 		AM_ConsoleFrame:SetBackdropBorderColor(0,0,0,0)
+		AM_Console_mainFrame:SetBackdropColor(0,0,0,0)
+		AM_Console_mainFrame:SetBackdropBorderColor(0,0,0,0)
 	elseif Defaults.backgroundHide == false then
 		AM_IconFrame:SetBackdropColor(0.1,0.1,0.1,0.7)
 		AM_IconFrame:SetBackdropBorderColor(1,1,1,1)
@@ -415,6 +435,8 @@ function AM_backgroundChange()
 		AM_FlareFrame:SetBackdropBorderColor(1,1,1,1)
 		AM_ConsoleFrame:SetBackdropColor(0.1,0.1,0.1,0.7)
 		AM_ConsoleFrame:SetBackdropBorderColor(0.1,0.1,0.1,0.1,0.7)
+		AM_Console_mainFrame:SetBackdropColor(0.1,0.1,0.1,0.7)
+		AM_Console_mainFrame:SetBackdropBorderColor(0.1,0.1,0.1,0.1,0.7)
 	end
 end
 
@@ -593,7 +615,17 @@ function AM_CheckUpdater()
 	AM_mainFrame:SetScale(Defaults.markerScale);
 	AM_Flares_mainFrame:SetScale(Defaults.flareScale)
 end
-	
+
+function AM_UpdatePullTimer(time_to_zero)
+	if (not time_to_zero) then
+		return false
+	end
+	if (math.ceil(time_to_zero - GetTime()) > 0) then
+		isPullTimerStarted = true
+	elseif (math.ceil(time_to_zero - GetTime()) <= 0) then
+		isPullTimerStarted = false
+	end
+end
 -------------------------------------------------------
 -- Options
 -------------------------------------------------------
@@ -630,8 +662,50 @@ local AbstractionMarksDisablerText = AbstractionMarksOptions.panel:CreateFontStr
 AbstractionMarksDisablerText:SetPoint("LEFT", AbstractionMarksDisablerCheck, "RIGHT", 5,0)
 AbstractionMarksDisablerText:SetText("|cffe1a500 Disable AbstractionMarks")
 
+local AbstractionMarksParty = CreateFrame("Slider", "AbstractionMarksParty", AbstractionMarksOptions.panel, "OptionsSliderTemplate")
+AbstractionMarksParty:SetPoint("TOPLEFT", AbstractionMarksDisablerCheck, "BOTTOMLEFT",0,-25)
+AbstractionMarksParty:SetSize(180,16)
+AbstractionMarksParty:SetMinMaxValues(3,30)
+AbstractionMarksParty:SetValue(math.floor(Defaults.partyTime))
+AbstractionMarksParty:SetValueStep(1.0)
+AbstractionMarksParty:SetOrientation("HORIZONTAL")
+getglobal(AbstractionMarksParty:GetName().."Low"):SetText("3sec")
+getglobal(AbstractionMarksParty:GetName().."High"):SetText("30sec")
+getglobal(AbstractionMarksParty:GetName().."Text"):SetText("Party Pull Time: "..math.floor(Defaults.partyTime).."sec")
+AbstractionMarksParty:SetValue(Defaults.partyTime)
+AbstractionMarksParty:SetScript("OnValueChanged", function(self) AM_time(self, "party") end)
+AbstractionMarksParty:SetScript("OnLoad", function(self) AM_time(self, "party") end)
+
+local AbstractionMarksRaid = CreateFrame("Slider", "AbstractionMarksRaid", AbstractionMarksOptions.panel, "OptionsSliderTemplate")
+AbstractionMarksRaid:SetPoint("TOPLEFT", AbstractionMarksParty, "BOTTOMLEFT",0,-25)
+AbstractionMarksRaid:SetSize(180,16)
+AbstractionMarksRaid:SetMinMaxValues(3,30)
+AbstractionMarksRaid:SetValue(math.floor(Defaults.raidTime))
+AbstractionMarksRaid:SetValueStep(1)
+AbstractionMarksRaid:SetOrientation("HORIZONTAL")
+getglobal(AbstractionMarksRaid:GetName().."Low"):SetText("3sec")
+getglobal(AbstractionMarksRaid:GetName().."High"):SetText("30sec")
+getglobal(AbstractionMarksRaid:GetName().."Text"):SetText("Raid Pull Time: "..math.floor(Defaults.raidTime).."sec")
+AbstractionMarksRaid:SetValue(Defaults.raidTime)
+AbstractionMarksRaid:SetScript("OnValueChanged", function(self) AM_time(self, "raid") end)
+AbstractionMarksRaid:SetScript("OnLoad", function(self) AM_time(self, "raid") end)
+
+local AbstractionMarksBreak = CreateFrame("Slider", "AbstractionMarksBreak", AbstractionMarksOptions.panel, "OptionsSliderTemplate")
+AbstractionMarksBreak:SetPoint("TOPLEFT", AbstractionMarksRaid, "BOTTOMLEFT",0,-25)
+AbstractionMarksBreak:SetSize(180,16)
+AbstractionMarksBreak:SetMinMaxValues(1,60)
+AbstractionMarksBreak:SetValue(math.floor(Defaults.breakTime))
+AbstractionMarksBreak:SetValueStep(1)
+AbstractionMarksBreak:SetOrientation("HORIZONTAL")
+getglobal(AbstractionMarksBreak:GetName().."Low"):SetText("1min")
+getglobal(AbstractionMarksBreak:GetName().."High"):SetText("60min")
+getglobal(AbstractionMarksBreak:GetName().."Text"):SetText("Break Time: "..math.floor(Defaults.breakTime).."min")
+AbstractionMarksBreak:SetValue(Defaults.breakTime)
+AbstractionMarksBreak:SetScript("OnValueChanged", function(self) AM_time(self, "break") end)
+AbstractionMarksBreak:SetScript("OnLoad", function(self) AM_time(self, "break") end)
+
 local AbstractionMarksScale = CreateFrame("Slider", "AbstractionMarksScale", AbstractionMarksOptions.panel, "OptionsSliderTemplate")
-AbstractionMarksScale:SetPoint("TOPLEFT", AbstractionMarksDisablerCheck, "BOTTOMLEFT",0,-25)
+AbstractionMarksScale:SetPoint("TOPLEFT", AbstractionMarksBreak, "BOTTOMLEFT",0,-25)
 AbstractionMarksScale:SetSize(180,16)
 AbstractionMarksScale:SetMinMaxValues(0.5,1.5)
 AbstractionMarksScale:SetValue(1)
@@ -639,7 +713,7 @@ AbstractionMarksScale:SetValueStep(0.01)
 AbstractionMarksScale:SetOrientation("HORIZONTAL")
 getglobal(AbstractionMarksScale:GetName().."Low"):SetText("50%")
 getglobal(AbstractionMarksScale:GetName().."High"):SetText("150%")
-getglobal(AbstractionMarksScale:GetName().."Text"):SetText(textPrefix.."Marker scale: "..math.floor((Defaults.markerScale*100)).."%")
+getglobal(AbstractionMarksScale:GetName().."Text"):SetText("Marker scale: "..math.floor((Defaults.markerScale*100)).."%")
 AbstractionMarksScale:SetValue(Defaults.markerScale)
 AbstractionMarksScale:SetScript("OnValueChanged", function(self) AM_scale(self, "main") end)
 AbstractionMarksScale:SetScript("OnLoad", function(self) AM_scale(self, "main") end)
@@ -668,6 +742,7 @@ AM_OnUpdate:RegisterEvent("PLAYER_LOGIN")
 AM_OnUpdate:RegisterEvent("PLAYER_ENTERING_WORLD")
 AM_OnUpdate:RegisterEvent("PLAYER_REGEN_DISABLED")
 AM_OnUpdate:RegisterEvent("PLAYER_REGEN_ENABLED")
+AM_OnUpdate:RegisterEvent("CHAT_MSG_ADDON")
 
 AM_OnUpdate:SetScript("OnEvent", function(self,event,addon,...)
 	if (event=="PLAYER_LOGOUT" or event=="PLAYER_ENTERING_WORLD") then
@@ -685,6 +760,21 @@ AM_OnUpdate:SetScript("OnEvent", function(self,event,addon,...)
 		isPullTimerStarted = false
 		isBreakTimerStarted = false
 		playerOutOfCombat = true
+	end
+	if (event=="CHAT_MSG_ADDON") then
+		if (prefix == "BigWigs" and string.find(message, "Pull") ) then
+			last = GetTime()
+			local timer = string.match(message, "%d+")
+			timer = tonumber(timer)
+			time_to_zero = GetTime() + timer
+			AM_UpdatePullTimer(time_to_zero)
+		elseif prefix == "D4" and string.find(message, "PT") then
+			last = GetTime()
+			local timer = string.match(message, "\t(%d+)\t")
+			timer = tonumber(timer)
+			time_to_zero = GetTime() + timer
+			AM_UpdatePullTimer(time_to_zero)
+		end
 	end
 end)
 

@@ -2,7 +2,7 @@
 ## Title: AbstractionMarks
 ## Notes: Marking made easy
 ## Author: Fertzane of US-Stormreaver
-## Version: 2.01
+## Version: 2.1b
 ## SavedVariablesPerCharacter: Defaults
 ## SavedVariables: Defaults
 AbstractionMarks.lua
