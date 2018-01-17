@@ -789,7 +789,9 @@ function SlashCmdList.MB(msg, editbox)
 	if (msg=="options") then
 		InterfaceOptionsFrame_OpenToCategory(AbstractionMarksOptions.panel)
 		InterfaceOptionsFrame_OpenToCategory(AbstractionMarksOptions.panel)
-    elseif (msg=="options") then
+    elseif (msg=="toggle") then
+    	Defaults.disabled = not Defaults.disabled
+    	AM_disable()
 	else
 		DEFAULT_CHAT_FRAME:AddMessage("use /AM options to open configuration screen")
 	end
