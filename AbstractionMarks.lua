@@ -25,7 +25,23 @@ Defaults = {
 	raidTime = 10,
 	breakTime = 5,
 }
-
+defaultDefault = {
+	shown = true,
+	vertical = false,
+	locked = true,
+	clamped = true,
+	tooltips = false,
+	backgroundHide = false,
+	disabled = false,
+	markerScale = 1,
+	flareScale = 1,
+	buttonScale = 1,
+	buttonsEnabled = true,
+	partyTime = 5,
+	raidTime = 10,
+	breakTime = 5,
+}
+for i, val in ipairs(Default) do val == nil and (Default[i] = defaultDefault[i]) end
 local isPullTimerStarted = false
 local isBreakTimerStarted = false
 local playerOutOfCombat = true
