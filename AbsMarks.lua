@@ -1,5 +1,6 @@
 function AbsMarkLoader(self)
   self.marks={}
+  self:SetBackdropColor(0.1,0.1,0.1,0.1,0.7)
   self:SetScript("OnMouseDown", function(self,button) if (button=="LeftButton" and Defaults.locked == false) then self:StartMoving() end end)
   self:SetScript("OnMouseUp", function(self) self:StopMovingOrSizing() end)
   for i = 8, 1, -1 do

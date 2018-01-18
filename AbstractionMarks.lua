@@ -41,7 +41,7 @@ defaultDefault = {
 	raidTime = 10,
 	breakTime = 5,
 }
-for i, val in ipairs(Default) do val == nil and (Default[i] = defaultDefault[i]) end
+for i, val in ipairs(Defaults) do if val == nil then Defaults[i] = defaultDefault[i] end end
 local isPullTimerStarted = false
 local isBreakTimerStarted = false
 local playerOutOfCombat = true
