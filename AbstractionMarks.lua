@@ -49,31 +49,11 @@ local last = nil
 _,_,_,isEnabledDBM,_,_,_ = GetAddOnInfo("DBM-Core")
 _,_,_,isEnabledBigWigs,_,_,_ = GetAddOnInfo("BigWigs")
 _,_,_,isEnabledVEM,_,_,_ = GetAddOnInfo("VEM-Core")
-
-if (isEnabledDBM) then
-	textPrefix = "/"
-elseif (isEnabledBigWigs) then
-	textPrefix = "/"
-elseif (isEnabledVEM) then
-	textPrefix = "/vem "
-end
-
+local textPrefix = "/"
+--Helper function for setting common frame attributes
 -------------------------------------------------------
 -- backdrops for frame
 -------------------------------------------------------
-local defaultBackdrop = {
-	bgFile = "Interface\\Tooltips\\UI-Tooltip-Background",
-	edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
-	tile = true,
-	tileSize = 16,
-	edgeSize = 16,
-	insets = {left = 4, right = 4, top = 4, bottom = 4,}
-}
-local borderlessBackdrop = {
-	bgFile = "Interface\\Tooltips\\UI-Tooltip-Background",
-	tile = true,
-	tileSize = 16
-}
 
 local editBoxBackdrop = {
 	bgFile = "Interface\\COMMON\\Common-Input-Border",
@@ -81,101 +61,22 @@ local editBoxBackdrop = {
 }
 
 -------------------------------------------------------
--- Main frames
+-- Main frames <<-- Unnecessary
 -------------------------------------------------------
-AM_mainFrame = CreateFrame("Frame", "AM_mainFrame", UIParent)
-AM_mainFrame:SetBackdrop(borderlessBackdrop)
-AM_mainFrame:SetBackdropColor(0,0,0,0)
-AM_mainFrame:EnableMouse(true)
-AM_mainFrame:SetMovable(true)
-AM_mainFrame:SetSize(190,35)
-AM_mainFrame:SetPoint("TOP", UIParent, "TOP")
-AM_mainFrame:SetClampedToScreen(true)
+
+---------
+--Temp Compatibility Variables
+----------
+
+local AM_IconFrame = AbsMarks
+local AM_mainFrame = AbsMarks
+local AM_Flares_mainFrame = AbsFlares
+local AM_FlareFrame = AbsFlares
 
 -------------------------------------------------------
 -- AM Icon Frame and Icons
 -------------------------------------------------------
-local AM_IconFrame = CreateFrame("Frame", "AM_IconFrame", AM_mainFrame)
-AM_IconFrame:SetBackdrop(defaultBackdrop)
-AM_IconFrame:SetBackdropColor(0.1,0.1,0.1,0.7)
-AM_IconFrame:EnableMouse(true)
-AM_IconFrame:SetMovable(true)
-AM_IconFrame:SetSize(190,35)
-AM_IconFrame:SetPoint("LEFT", AM_mainFrame, "LEFT")
-AM_IconFrame:SetScript("OnMouseDown", function(self,button) if (button=="LeftButton" and Defaults.locked == false) then AM_mainFrame:StartMoving() end end)
-AM_IconFrame:SetScript("OnMouseUp", function(self) AM_mainFrame:StopMovingOrSizing() end)
 
-local AM_IconSkull = CreateFrame("Button", "AM_IconSkull", AM_IconFrame)
-AM_IconSkull:SetSize(20,20)
-AM_IconSkull:SetPoint("LEFT", AM_IconFrame, "LEFT",5,0)
-AM_IconSkull:SetNormalTexture("interface\\targetingframe\\ui-raidtargetingIcons")
-AM_IconSkull:GetNormalTexture():SetTexCoord(0.75,1,0.25,0.5)
-AM_IconSkull:EnableMouse(true)
-AM_IconSkull:SetScript("OnClick", function(self) SetRaidTargetIcon("target", 8) end)
-
-local AM_IconCross = CreateFrame("Button", "AM_IconCross", AM_IconFrame)
-AM_IconCross:SetSize(20,20)
-AM_IconCross:SetPoint("LEFT", AM_IconSkull, "RIGHT")
-AM_IconCross:SetNormalTexture("interface\\targetingframe\\ui-raidtargetingIcons")
-AM_IconCross:GetNormalTexture():SetTexCoord(0.5,0.75,0.25,0.5)
-AM_IconCross:EnableMouse(true)
-AM_IconCross:SetScript("OnClick", function(self) SetRaidTargetIcon("target", 7) end)
-
-local AM_IconSquare = CreateFrame("Button", "AM_IconSquare", AM_IconFrame)
-AM_IconSquare:SetSize(20,20)
-AM_IconSquare:SetPoint("LEFT", AM_IconCross, "RIGHT")
-AM_IconSquare:SetNormalTexture("interface\\targetingframe\\ui-raidtargetingIcons")
-AM_IconSquare:GetNormalTexture():SetTexCoord(0.25,0.5,0.25,0.5)
-AM_IconSquare:EnableMouse(true)
-AM_IconSquare:SetScript("OnClick", function(self) SetRaidTargetIcon("target", 6) end)
-
-local AM_IconMoon = CreateFrame("Button", "AM_IconMoon", AM_IconFrame)
-AM_IconMoon:SetSize(20,20)
-AM_IconMoon:SetPoint("LEFT", AM_IconSquare, "RIGHT")
-AM_IconMoon:SetNormalTexture("interface\\targetingframe\\ui-raidtargetingIcons")
-AM_IconMoon:GetNormalTexture():SetTexCoord(0,0.25,0.25,0.5)
-AM_IconMoon:EnableMouse(true)
-AM_IconMoon:SetScript("OnClick", function(self) SetRaidTargetIcon("target", 5) end)
-
-local AM_IconTriangle = CreateFrame("Button", "AM_IconTriangle", AM_IconFrame)
-AM_IconTriangle:SetSize(20,20)
-AM_IconTriangle:SetPoint("LEFT", AM_IconMoon, "RIGHT")
-AM_IconTriangle:SetNormalTexture("interface\\targetingframe\\ui-raidtargetingIcons")
-AM_IconTriangle:GetNormalTexture():SetTexCoord(0.75,1,0,0.25)
-AM_IconTriangle:EnableMouse(true)
-AM_IconTriangle:SetScript("OnClick", function(self) SetRaidTargetIcon("target", 4) end)
-
-local AM_IconDiamond = CreateFrame("Button", "AM_IconDiamond", AM_IconFrame)
-AM_IconDiamond:SetSize(20,20)
-AM_IconDiamond:SetPoint("LEFT", AM_IconTriangle, "RIGHT")
-AM_IconDiamond:SetNormalTexture("interface\\targetingframe\\ui-raidtargetingIcons")
-AM_IconDiamond:GetNormalTexture():SetTexCoord(0.5,0.75,0,0.25)
-AM_IconDiamond:EnableMouse(true)
-AM_IconDiamond:SetScript("OnClick", function(self) SetRaidTargetIcon("target", 3) end)
-
-local AM_IconCircle = CreateFrame("Button", "AM_IconCircle", AM_IconFrame)
-AM_IconCircle:SetSize(20,20)
-AM_IconCircle:SetPoint("LEFT", AM_IconDiamond, "RIGHT")
-AM_IconCircle:SetNormalTexture("interface\\targetingframe\\ui-raidtargetingIcons")
-AM_IconCircle:GetNormalTexture():SetTexCoord(0.25,0.5,0,0.25)
-AM_IconCircle:EnableMouse(true)
-AM_IconCircle:SetScript("OnClick", function(self) SetRaidTargetIcon("target", 2) end)
-
-local AM_IconStar = CreateFrame("Button", "AM_IconStar", AM_IconFrame)
-AM_IconStar:SetSize(20,20)
-AM_IconStar:SetPoint("LEFT", AM_IconCircle, "RIGHT")
-AM_IconStar:SetNormalTexture("interface\\targetingframe\\ui-raidtargetingIcons")
-AM_IconStar:GetNormalTexture():SetTexCoord(0,0.25,0,0.25)
-AM_IconStar:EnableMouse(true)
-AM_IconStar:SetScript("OnClick", function(self) SetRaidTargetIcon("target", 1) end)
-
-local AM_LockIcon = CreateFrame("Button", "AM_LockIcon", AM_IconFrame)
-AM_LockIcon:SetSize(20,20)
-AM_LockIcon:SetPoint("LEFT", AM_IconStar , "RIGHT")
-AM_LockIcon:SetNormalTexture("Interface\\GLUES\\CharacterSelect\\Glues-Addon-Icons")
-AM_LockIcon:GetNormalTexture():SetTexCoord(0, 0.25, 0, 1)
-AM_LockIcon:EnableMouse(true)
-AM_LockIcon:SetScript("OnClick", function(self) AM_lockToggle() end)
 --Used as a debug button
 --AM_LockIcon:SetScript("OnClick", function(self) name,_,_,isEnabled,_,_,_ = GetAddOnInfo("DBM-Cores") SendChatMessage(isEnabled) end)
 
@@ -183,101 +84,19 @@ AM_LockIcon:SetScript("OnClick", function(self) AM_lockToggle() end)
 -- AM_Flares Main Frame and Movers
 -------------------------------------------------------
 
-AM_Flares_mainFrame = CreateFrame("Frame", "AM_Flares_mainFrame", UIParent)
-AM_Flares_mainFrame:SetBackdrop(borderlessBackdrop)
-AM_Flares_mainFrame:SetBackdropColor(0,0,0,0)
-AM_Flares_mainFrame:EnableMouse(true)
-AM_Flares_mainFrame:SetMovable(true)
-AM_Flares_mainFrame:SetSize(230,35)
-AM_Flares_mainFrame:SetPoint("TOP", UIParent, "TOP",0,-40)
-AM_Flares_mainFrame:SetClampedToScreen(true)
-
 -------------------------------------------------------
 -- The AM_Flare Frame and AM_Flares
 -------------------------------------------------------
-local AM_FlareFrame = CreateFrame("Frame", "AM_FlareFrame", AM_Flares_mainFrame)
-AM_FlareFrame:SetBackdrop(defaultBackdrop)
-AM_FlareFrame:SetBackdropColor(0.1,0.1,0.1,0.1,0.7)
-AM_FlareFrame:EnableMouse(true)
-AM_FlareFrame:SetMovable(true)
-AM_FlareFrame:SetSize(230,35)
-AM_FlareFrame:SetPoint("LEFT", AM_Flares_mainFrame, "LEFT")
-AM_FlareFrame:SetClampedToScreen(true)
-AM_FlareFrame:SetScript("OnMouseDown", function(self,button) if (button=="LeftButton" and Defaults.locked == false) then AM_Flares_mainFrame:StartMoving() end end)
-AM_FlareFrame:SetScript("OnMouseUp", function(self) AM_Flares_mainFrame:StopMovingOrSizing() end)
-
-local AM_FlareWhite = CreateFrame("Button", "AM_FlareWhite", AM_FlareFrame, "SecureActionButtonTemplate")
-AM_FlareWhite:SetSize(25,25)
-AM_FlareWhite:SetNormalTexture("interface\\minimap\\partyraidblips")
-AM_FlareWhite:GetNormalTexture():SetTexCoord(0.5,0.625,0,0.25)
-AM_FlareWhite:SetPoint("TOPLEFT", AM_FlareFrame, "TOPLEFT",5,-5)
-AM_FlareWhite:SetAttribute("type", "macro")
-AM_FlareWhite:SetAttribute("macrotext1", "/click CompactRaidFrameManagerDisplayFrameLeaderOptionsRaidWorldMarkerButton\n/click DropDownList1Button1")
-
-local AM_FlareRed = CreateFrame("Button", "AM_FlareRed", AM_FlareFrame, "SecureActionButtonTemplate")
-AM_FlareRed:SetSize(25,25)
-AM_FlareRed:SetNormalTexture("interface\\minimap\\partyraidblips")
-AM_FlareRed:GetNormalTexture():SetTexCoord(0.625,0.75,0,0.25)
-AM_FlareRed:SetPoint("LEFT", AM_FlareWhite, "RIGHT")
-AM_FlareRed:SetAttribute("type", "macro")
-AM_FlareRed:SetAttribute("macrotext1", "/click CompactRaidFrameManagerDisplayFrameLeaderOptionsRaidWorldMarkerButton\n/click DropDownList1Button2")
-
-local AM_FlareBlue = CreateFrame("Button", "AM_FlareBlue", AM_FlareFrame, "SecureActionButtonTemplate")
-AM_FlareBlue:SetSize(25,25)
-AM_FlareBlue:SetNormalTexture("interface\\minimap\\partyraidblips")
-AM_FlareBlue:GetNormalTexture():SetTexCoord(0.75,0.875,0,0.25)
-AM_FlareBlue:SetPoint("LEFT", AM_FlareRed, "RIGHT")
-AM_FlareBlue:SetAttribute("type", "macro")
-AM_FlareBlue:SetAttribute("macrotext1", "/click CompactRaidFrameManagerDisplayFrameLeaderOptionsRaidWorldMarkerButton\n/click DropDownList1Button3")
-
-local AM_FlareSilver = CreateFrame("Button", "AM_FlareSilver", AM_FlareFrame, "SecureActionButtonTemplate")
-AM_FlareSilver:SetSize(25,25)
-AM_FlareSilver:SetNormalTexture("interface\\minimap\\partyraidblips")
-AM_FlareSilver:GetNormalTexture():SetTexCoord(0.875,1,0,0.25)
-AM_FlareSilver:SetPoint("LEFT", AM_FlareBlue, "RIGHT")
-AM_FlareSilver:SetAttribute("type", "macro")
-AM_FlareSilver:SetAttribute("macrotext1", "/click CompactRaidFrameManagerDisplayFrameLeaderOptionsRaidWorldMarkerButton\n/click DropDownList1Button4")
-
-local AM_FlareGreen = CreateFrame("Button", "AM_FlareGreen", AM_FlareFrame, "SecureActionButtonTemplate")
-AM_FlareGreen:SetSize(25,25)
-AM_FlareGreen:SetNormalTexture("interface\\minimap\\partyraidblips")
-AM_FlareGreen:GetNormalTexture():SetTexCoord(0.25,0.375,0,0.25)
-AM_FlareGreen:SetPoint("LEFT", AM_FlareSilver, "RIGHT")
-AM_FlareGreen:SetAttribute("type", "macro")
-AM_FlareGreen:SetAttribute("macrotext1", "/click CompactRaidFrameManagerDisplayFrameLeaderOptionsRaidWorldMarkerButton\n/click DropDownList1Button5")
-
-local AM_FlarePurple = CreateFrame("Button", "AM_FlarePurple", AM_FlareFrame, "SecureActionButtonTemplate")
-AM_FlarePurple:SetSize(25,25)
-AM_FlarePurple:SetNormalTexture("interface\\minimap\\partyraidblips")
-AM_FlarePurple:GetNormalTexture():SetTexCoord(0,0.125,0.25,0.5)
-AM_FlarePurple:SetPoint("LEFT", AM_FlareGreen, "RIGHT")
-AM_FlarePurple:SetAttribute("type", "macro")
-AM_FlarePurple:SetAttribute("macrotext1", "/click CompactRaidFrameManagerDisplayFrameLeaderOptionsRaidWorldMarkerButton\n/click DropDownList1Button6")
-
-local AM_FlareOrange = CreateFrame("Button", "AM_FlareOrange", AM_FlareFrame, "SecureActionButtonTemplate")
-AM_FlareOrange:SetSize(25,25)
-AM_FlareOrange:SetNormalTexture("interface\\minimap\\partyraidblips")
-AM_FlareOrange:GetNormalTexture():SetTexCoord(0.25,0.375,0.25,0.5)
-AM_FlareOrange:SetPoint("LEFT", AM_FlarePurple, "RIGHT")
-AM_FlareOrange:SetAttribute("type", "macro")
-AM_FlareOrange:SetAttribute("macrotext1", "/click CompactRaidFrameManagerDisplayFrameLeaderOptionsRaidWorldMarkerButton\n/click DropDownList1Button7")
-
-local AM_FlareYellow = CreateFrame("Button", "AM_FlareYellow", AM_FlareFrame, "SecureActionButtonTemplate")
-AM_FlareYellow:SetSize(25,25)
-AM_FlareYellow:SetNormalTexture("interface\\minimap\\partyraidblips")
-AM_FlareYellow:GetNormalTexture():SetTexCoord(0.375,0.5,0,0.25)
-AM_FlareYellow:SetPoint("LEFT", AM_FlareOrange, "RIGHT")
-AM_FlareYellow:SetAttribute("type", "macro")
-AM_FlareYellow:SetAttribute("macrotext1", "/click CompactRaidFrameManagerDisplayFrameLeaderOptionsRaidWorldMarkerButton\n/click DropDownList1Button8")
-
-local AM_FlareClear = CreateFrame("Button", "AM_FlareClear", AM_FlareFrame, "SecureActionButtonTemplate")
-AM_FlareClear:SetSize(15,15)
-AM_FlareClear:SetNormalTexture("interface\\glues\\loadingscreens\\dynamicelements")
-AM_FlareClear:GetNormalTexture():SetTexCoord(0,0.5,0,0.5)
-AM_FlareClear:SetPoint("LEFT", AM_FlareYellow, "RIGHT")
-AM_FlareClear:SetAttribute("type", "macro")
-AM_FlareClear:SetAttribute("macrotext1", "/click CompactRaidFrameManagerDisplayFrameLeaderOptionsRaidWorldMarkerButton\n/click DropDownList1Button9")
-
+------ TEMPORARY WORKAROUND
+local AM_FlareWhite = AbsFlares.flares[1]
+local AM_FlareRed = AbsFlares.flares[2]
+local AM_FlareBlue = AbsFlares.flares[3]
+local AM_FlareSilver = AbsFlares.flares[4]
+local AM_FlareGreen = AbsFlares.flares[5]
+local AM_FlarePurple = AbsFlares.flares[6]
+local AM_FlareOrange = AbsFlares.flares[7]
+local AM_FlareYellow = AbsFlares.flares[8]
+local AM_FlareClear = AbsFlares.flares[9]
 
 -------------------------------------------------------
 -- Readycheck and dbm buttons
@@ -317,7 +136,7 @@ AM_ReadyCheck:SetAttribute("macrotext1", "/readycheck")
 AM_ReadyCheck:SetScript("OnMouseDown", function(self,button) if (button=="LeftButton") then AM_ReadyCheck:SetNormalTexture("Interface\\AddOns\\AbstractionMarks\\Media\\ReadyCheckDown") end end)
 AM_ReadyCheck:SetScript("OnMouseUp", function(self) AM_ReadyCheck:SetNormalTexture("Interface\\AddOns\\AbstractionMarks\\Media\\ReadyCheckUp") end)
 
-local AM_Pull = CreateFrame("Button", "AM_Pull", AM_ReadyCheck, "SecureActionButtonTemplate")
+local AM_Pull = CreateFrame("Button", "AM_Pull", AM_ConsoleFrame, "SecureActionButtonTemplate")
 AM_Pull:SetSize(81,26)
 AM_Pull:SetNormalTexture("Interface\\AddOns\\AbstractionMarks\\Media\\PullUp")
 AM_Pull:GetNormalTexture():SetTexCoord(0,1,0,1)
@@ -328,7 +147,7 @@ AM_Pull:SetAttribute("macrotext1", textPrefix.."pull 15")
 AM_Pull:SetScript("OnMouseDown", function(self,button) if (button=="LeftButton") then AM_Pull:SetNormalTexture("Interface\\AddOns\\AbstractionMarks\\Media\\PullDown") end end)
 AM_Pull:SetScript("OnMouseUp", function(self) AM_Pull:SetNormalTexture("Interface\\AddOns\\AbstractionMarks\\Media\\PullUp") AM_pullCommon() end)
 	
-local AM_Break = CreateFrame("Button", "AM_Break", AM_Pull, "SecureActionButtonTemplate")
+local AM_Break = CreateFrame("Button", "AM_Break", AM_ConsoleFrame, "SecureActionButtonTemplate")
 AM_Break:SetSize(81,26)
 AM_Break:SetNormalTexture("Interface\\AddOns\\AbstractionMarks\\Media\\BreakUp")
 AM_Break:GetNormalTexture():SetTexCoord(0,1,0,1)
@@ -421,6 +240,8 @@ function AM_time(self, DB)
 	end
 end
 
+  AM_LockIcon:SetScript("OnClick", function(self) AM_lockToggle() end)
+
 function AM_scale(self, DB)
 	if self == nil then return end
 	if DB == "main" then
@@ -442,8 +263,6 @@ function AM_backgroundChange()
 		AM_FlareFrame:SetBackdropBorderColor(0,0,0,0)
 		AM_ConsoleFrame:SetBackdropColor(0,0,0,0)
 		AM_ConsoleFrame:SetBackdropBorderColor(0,0,0,0)
-		AM_Console_mainFrame:SetBackdropColor(0,0,0,0)
-		AM_Console_mainFrame:SetBackdropBorderColor(0,0,0,0)
 	elseif Defaults.backgroundHide == false then
 		AM_IconFrame:SetBackdropColor(0.1,0.1,0.1,0.7)
 		AM_IconFrame:SetBackdropBorderColor(1,1,1,1)
@@ -451,8 +270,6 @@ function AM_backgroundChange()
 		AM_FlareFrame:SetBackdropBorderColor(1,1,1,1)
 		AM_ConsoleFrame:SetBackdropColor(0.1,0.1,0.1,0.7)
 		AM_ConsoleFrame:SetBackdropBorderColor(0.1,0.1,0.1,0.1,0.7)
-		AM_Console_mainFrame:SetBackdropColor(0.1,0.1,0.1,0.7)
-		AM_Console_mainFrame:SetBackdropBorderColor(0.1,0.1,0.1,0.1,0.7)
 	end
 end
 
@@ -607,8 +424,8 @@ end
 
 function AM_SetPositions()
 	if (Defaults.MarkersX ~= nil) then
-		AM_mainFrame:ClearAllPoints()
-		AM_Flares_mainFrame:ClearAllPoints()
+--		AM_mainFrame:ClearAllPoints()
+--		AM_Flares_mainFrame:ClearAllPoints()
 		AM_mainFrame:SetPoint(Defaults.MarkersAP, UIParent, Defaults.MarkersX, Defaults.MarkersY)
 		AM_Flares_mainFrame:SetPoint(Defaults.FlaresAP, UIParent, Defaults.FlaresX, Defaults.FlaresY)
 		AM_CheckUpdater()

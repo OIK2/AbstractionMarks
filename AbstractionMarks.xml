@@ -1,0 +1,78 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+    http://wowprogramming.com/FrameXML/UI.xsd">
+    <!-- TEMPLATE DEFINITIONS -->
+    <Button name="AbsMarkTemplate" virtual="true">
+      <Size>
+        <AbsDimension x="20" y="20" />
+      </Size>
+      <NormalTexture name="$parentNormalTexture" parentKey="Icon" file="interface\targetingframe\ui-raidtargetingIcons"/>
+      <Scripts>
+        <OnLoad>
+          self:EnableMouse(true)
+        </OnLoad>
+      </Scripts>
+    </Button>
+
+    <Button name="AbsFlareTemplate" inherits="SecureActionButtonTemplate" virtual="true">
+      <Size>
+        <AbsDimension x="25" y="25"/>
+      </Size>
+      <NormalTexture name="$parentNormalTexture" parentKey="texture" file="interface\minimap\partyraidblips"/>
+    </Button>
+
+    <Frame name="borderlessBackdrop" virtual="true">
+      <Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" tile="true">
+        <TileSize val="16"/>
+      </Backdrop>
+    </Frame>
+    
+    <Frame name="defaultBackdrop" virtual="true">
+      <Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background"
+                edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+        <TileSize val="16"/>
+        <EdgeSize val="16"/>
+        <BackgroundInsets left="4" right="4" top="4" bottom="4"/>
+      </Backdrop>
+    </Frame>
+
+    <!-- AbstractionMarks frame definitions -->
+    <Frame name="AbsMarks" parent="UIParent" inherits="borderlessBackdrop">
+      <Size x="190" y="35"/>
+      <Anchors>
+        <Anchor point="TOP" relativePoint="TOP" relativeTo="UIParent"/>
+      </Anchors>
+      <Scripts>
+        <OnLoad>
+          AbsMarkLoader(self)
+          AbsCommonFrame(self)
+        </OnLoad>
+      </Scripts>
+    </Frame>
+    <Frame name="AbsFlares" parent="UIParent" inherits="borderlessBackdrop">
+      <Size x="230" y="35"/>
+      <Anchors>
+        <Anchor point="TOP" relativePoint="TOP" relativeTo="UIParent"/>
+      </Anchors>
+      <Scripts>
+        <OnLoad>
+          AbsFlareLoader(self)
+          AbsCommonFrame(self)
+        </OnLoad>
+      </Scripts>
+    </Frame>
+<!--
+    <Frame name="AbsConsole" parent="UIParent" inheritsFrom="AbsCommon, borderlessBackdrop">
+      <Size x="81" y="84"/>
+      <Anchors>
+        <Anchor point="TOP" relativePoint="TOP" relativeTo="UIParent"/>
+      </Anchors>
+      <Scripts>
+        <OnLoad>
+          AbsCommonFrame(self)
+        </OnLoad>
+      </Scripts>
+    </Frame>-->
+</Ui>
+

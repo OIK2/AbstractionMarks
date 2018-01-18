@@ -5,4 +5,8 @@
 ## Version: 2.1b
 ## SavedVariablesPerCharacter: Defaults
 ## SavedVariables: Defaults
+
+AbsMarks.lua
+AbsFlares.lua
+AbstractionMarks.xml
 AbstractionMarks.lua
