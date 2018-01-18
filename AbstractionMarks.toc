@@ -1,8 +1,8 @@
-## Interface: 60000
+## Interface: 70300
 ## Title: AbstractionMarks
 ## Notes: Marking made easy
 ## Author: Fertzane of US-Stormreaver
-## Version: 2.1b
+## Version: 2.1c
 ## SavedVariablesPerCharacter: Defaults
 ## SavedVariables: Defaults
 

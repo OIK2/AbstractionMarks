@@ -46,9 +46,6 @@ local isPullTimerStarted = false
 local isBreakTimerStarted = false
 local playerOutOfCombat = true
 local last = nil
-_,_,_,isEnabledDBM,_,_,_ = GetAddOnInfo("DBM-Core")
-_,_,_,isEnabledBigWigs,_,_,_ = GetAddOnInfo("BigWigs")
-_,_,_,isEnabledVEM,_,_,_ = GetAddOnInfo("VEM-Core")
 local textPrefix = "/"
 --Helper function for setting common frame attributes
 -------------------------------------------------------
@@ -163,6 +160,7 @@ AM_Break:SetScript("OnMouseUp", function(self) AM_Break:SetNormalTexture("Interf
 -------------------------------------------------------
 function AM_pullCommon()
 	if playerOutOfCombat == true then
+		AM_AddonCheck()
 		if IsInRaid() then
 			countdownTime = Defaults.raidTime
 			chatChan = "RAID_WARNING"
@@ -183,6 +181,7 @@ function AM_pullCommon()
 end
 function AM_breakCommon()
 	if playerOutOfCombat == true then
+		AM_AddonCheck()
 		if IsInRaid() then
 			chatChan = "RAID_WARNING"
 		elseif not IsInRaid() then
@@ -365,6 +364,13 @@ function AM_UpdatePullTimer(time_to_zero)
 		isPullTimerStarted = false
 	end
 end
+
+function AM_AddonCheck()
+	local isEnabledDBM = IsAddOnLoaded("DBM-Core")
+	local isEnabledBigWigs = IsAddOnLoaded("BigWigs")
+	if (not isEnabledDBM and not isEnabledBigWigs) then DEFAULT_CHAT_FRAME:AddMessage("A Bossmod, such as Deadly Boss Mods or BigWigs, is required for the Pull and Break timer operations within AbstractionMarks.  ReadyCheck, Markers, and Flares will continue to work without these additional addons.") end
+end
+
 -------------------------------------------------------
 -- Options
 -------------------------------------------------------
