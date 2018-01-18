@@ -9,7 +9,7 @@ function AbsMarkLoader(self)
     self.marks[i]:GetNormalTexture():SetTexCoord(t/4, (t+1)/4, ((i > 4) and .25 or 0), ((i > 4) and .5 or .25))
     self.marks[i]:SetScript("OnClick", function(self) SetRaidTargetIcon("target", i) end)
     if i == 8 then
-      self.marks[i]:SetPoint("LEFT", self, "LEFT", 5, 0)
+      self.marks[i]:SetPoint("TOPLEFT", self, "TOPLEFT", 5, -5)
     else
       self.marks[i]:SetPoint("LEFT", self.marks[i+1], "RIGHT")
     end

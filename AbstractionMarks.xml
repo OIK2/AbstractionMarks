@@ -39,7 +39,7 @@
 
     <!-- AbstractionMarks frame definitions -->
     <Frame name="AbsMarks" parent="UIParent" inherits="borderlessBackdrop">
-      <Size x="190" y="35"/>
+      <Size x="190" y="30"/>
       <Anchors>
         <Anchor point="TOP" relativePoint="TOP" relativeTo="UIParent"/>
       </Anchors>

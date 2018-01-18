@@ -224,7 +224,9 @@ end
 
 function AM_lockToggle()
     if Defaults.locked then AM_unlock("main") else AM_lock("main") end
-end   
+end 
+
+AM_LockIcon:SetScript("OnClick", function(self) AM_lockToggle() end)  
 
 function AM_time(self, DB)
 	if self == nil then return end
@@ -239,8 +241,6 @@ function AM_time(self, DB)
 		getglobal(self:GetName().."Text"):SetText("Break Time: "..math.floor(Defaults.breakTime).."min")
 	end
 end
-
-  AM_LockIcon:SetScript("OnClick", function(self) AM_lockToggle() end)
 
 function AM_scale(self, DB)
 	if self == nil then return end
@@ -274,140 +274,46 @@ function AM_backgroundChange()
 end
 
 function AM_makeVertical()
-	AM_IconSkull:ClearAllPoints()
-	AM_IconCross:ClearAllPoints()
-	AM_IconSquare:ClearAllPoints()
-	AM_IconMoon:ClearAllPoints()
-	AM_IconTriangle:ClearAllPoints()
-	AM_IconDiamond:ClearAllPoints()
-	AM_IconCircle:ClearAllPoints()
-	AM_IconStar:ClearAllPoints()
-	AM_LockIcon:ClearAllPoints()
-	AM_IconFrame:ClearAllPoints()
-	
-	AM_FlareWhite:ClearAllPoints()
-	AM_FlareRed:ClearAllPoints()
-	AM_FlareBlue:ClearAllPoints()
-	AM_FlareSilver:ClearAllPoints()
-	AM_FlareGreen:ClearAllPoints()
-	AM_FlarePurple:ClearAllPoints()
-	AM_FlareOrange:ClearAllPoints()
-	AM_FlareYellow:ClearAllPoints()
-	AM_FlareClear:ClearAllPoints()
-	AM_FlareFrame:ClearAllPoints()
-	
-	if Defaults.vertical == true then
-		AM_IconSkull:SetPoint("TOP", AM_IconFrame, "TOP",0,-5)
-		AM_IconCross:SetPoint("TOP", AM_IconSkull, "BOTTOM")
-		AM_IconSquare:SetPoint("TOP", AM_IconCross, "BOTTOM")
-		AM_IconMoon:SetPoint("TOP", AM_IconSquare, "BOTTOM")
-		AM_IconTriangle:SetPoint("TOP", AM_IconMoon, "BOTTOM")
-		AM_IconDiamond:SetPoint("TOP", AM_IconTriangle, "BOTTOM")
-		AM_IconCircle:SetPoint("TOP", AM_IconDiamond, "BOTTOM")
-		AM_IconStar:SetPoint("TOP", AM_IconCircle, "BOTTOM")
-		AM_LockIcon:SetPoint("TOP", AM_IconStar , "BOTTOM")
-		AM_mainFrame:SetSize(35,190)
-		AM_IconFrame:SetSize(35,190)
-		AM_IconFrame:SetPoint("TOP", AM_mainFrame, "TOP")
-	
-		AM_FlareWhite:SetPoint("TOPLEFT", AM_FlareFrame, "TOPLEFT",4,-5)
-		AM_FlareRed:SetPoint("TOP", AM_FlareWhite, "BOTTOM")
-		AM_FlareBlue:SetPoint("TOP", AM_FlareRed, "BOTTOM")
-		AM_FlareSilver:SetPoint("TOP", AM_FlareBlue, "BOTTOM")
-		AM_FlareGreen:SetPoint("TOP", AM_FlareSilver, "BOTTOM")
-		AM_FlarePurple:SetPoint("TOP", AM_FlareGreen, "BOTTOM")
-		AM_FlareOrange:SetPoint("TOP", AM_FlarePurple, "BOTTOM")
-		AM_FlareYellow:SetPoint("TOP", AM_FlareOrange, "BOTTOM")
-		AM_FlareClear:SetPoint("TOP", AM_FlareYellow, "BOTTOM",0,-3)
-		AM_Flares_mainFrame:SetSize(35,180)
-		AM_FlareFrame:SetSize(35,230)
-		AM_FlareFrame:SetPoint("TOP", AM_Flares_mainFrame, "TOP")
-		
-	elseif Defaults.vertical == false then
-		AM_IconSkull:SetPoint("LEFT", AM_IconFrame, "LEFT",5,0)
-		AM_IconCross:SetPoint("LEFT", AM_IconSkull, "RIGHT")
-		AM_IconSquare:SetPoint("LEFT", AM_IconCross, "RIGHT")
-		AM_IconMoon:SetPoint("LEFT", AM_IconSquare, "RIGHT")
-		AM_IconTriangle:SetPoint("LEFT", AM_IconMoon, "RIGHT")
-		AM_IconDiamond:SetPoint("LEFT", AM_IconTriangle, "RIGHT")
-		AM_IconCircle:SetPoint("LEFT", AM_IconDiamond, "RIGHT")
-		AM_IconStar:SetPoint("LEFT", AM_IconCircle, "RIGHT")
-		AM_LockIcon:SetPoint("LEFT", AM_IconStar , "RIGHT")
-		AM_mainFrame:SetSize(190,35)
-		AM_IconFrame:SetSize(190,35)
-		AM_IconFrame:SetPoint("LEFT", AM_mainFrame, "LEFT")
-	
-		AM_FlareWhite:SetPoint("TOPLEFT", AM_FlareFrame, "TOPLEFT",4,-5)
-		AM_FlareRed:SetPoint("LEFT", AM_FlareWhite, "RIGHT")
-		AM_FlareBlue:SetPoint("LEFT", AM_FlareRed, "RIGHT")
-		AM_FlareSilver:SetPoint("LEFT", AM_FlareBlue, "RIGHT")
-		AM_FlareGreen:SetPoint("LEFT", AM_FlareSilver, "RIGHT")
-		AM_FlarePurple:SetPoint("LEFT", AM_FlareGreen, "RIGHT")
-		AM_FlareOrange:SetPoint("LEFT", AM_FlarePurple, "RIGHT")
-		AM_FlareYellow:SetPoint("LEFT", AM_FlareOrange, "RIGHT")
-		AM_FlareClear:SetPoint("LEFT", AM_FlareYellow, "RIGHT",3,0)
-		AM_Flares_mainFrame:SetSize(180,35)
-		AM_FlareFrame:SetSize(230,35)
-		AM_FlareFrame:SetPoint("LEFT", AM_Flares_mainFrame, "LEFT")
+--[[  for i = 2, 8 do
+    AbsMarks.marks[i]:ClearAllPoints()
+    AbsFlares.flares[i-1]:ClearAllPoints()
+  end
+  AbsFlares.flares[9]:ClearAllPoints()]]
+  if Defaults.vertical == true then
+    AbsFlares:SetSize(35,230)
+    AbsMarks:SetSize(30, 206)
+ --   AbsMarks.marks[8]:SetPoint("TOPLEFT", AbsMarks, "TOPLEFT", 5, -5)
+ --   AbsFlares.flares[1]:SetPoint("TOPLEFT", AbsFlares, "TOPLEFT", 5, -5)  
+    for i = 2, 8 do
+      local t = 9 - i
+      AbsMarks.marks[t]:SetPoint("TOPLEFT", AbsMarks.marks[t+1], "BOTTOMLEFT", 0, -2)
+      AbsFlares.flares[i]:SetPoint("TOPLEFT", AbsFlares.flares[i-1], "BOTTOMLEFT")
+    end
+    AbsFlares.flares[9]:SetPoint("TOPLEFT", AbsFlares.flares[8], "BOTTOMLEFT")
+    AM_LockIcon:SetPoint("TOPLEFT", AbsMarks.marks[1], "BOTTOMLEFT", 0, -2)
+  elseif Defaults.vertical == false then
+    AbsFlares:SetSize(230,35)
+    AbsMarks:SetSize(190, 30)
+    for i = 2, 8 do
+      local t = 9 - i
+      AbsMarks.marks[t]:SetPoint("TOPLEFT", AbsMarks.marks[t+1], "TOPRIGHT")
+      AbsFlares.flares[i]:SetPoint("TOPLEFT", AbsFlares.flares[i-1], "TOPRIGHT")
+    end
+    AbsFlares.flares[9]:SetPoint("TOPLEFT", AbsFlares.flares[8], "TOPRIGHT")
+    AM_LockIcon:SetPoint("TOPLEFT", AbsMarks.marks[1], "TOPRIGHT")
 	end
 end
 
 function AM_disable()
-	if Defaults.disabled == true then
-		AM_IconSkull:Hide()
-		AM_IconCross:Hide()
-		AM_IconSquare:Hide()
-		AM_IconMoon:Hide()
-		AM_IconTriangle:Hide()
-		AM_IconDiamond:Hide()
-		AM_IconCircle:Hide()
-		AM_IconStar:Hide()
-		AM_LockIcon:Hide()
-		AM_IconFrame:Hide()
-	
-		AM_FlareWhite:Hide()
-		AM_FlareRed:Hide()
-		AM_FlareBlue:Hide()
-		AM_FlareSilver:Hide()
-		AM_FlareGreen:Hide()
-		AM_FlarePurple:Hide()
-		AM_FlareOrange:Hide()
-		AM_FlareYellow:Hide()
-		AM_FlareClear:Hide()
-		AM_FlareFrame:Hide()
-		
-		AM_ConsoleFrame:Hide()
-		AM_ReadyCheck:Hide()
-		AM_Pull:Hide()
-		AM_Break:Hide()
-		
+  if Defaults.disabled == true then
+    AbsMarks:Hide()
+    AbsFlares:Hide()
+    AM_ConsoleFrame:Hide()
+
 	elseif Defaults.disabled == false then
-		AM_IconSkull:Show()
-		AM_IconCross:Show()
-		AM_IconSquare:Show()
-		AM_IconMoon:Show()
-		AM_IconTriangle:Show()
-		AM_IconDiamond:Show()
-		AM_IconCircle:Show()
-		AM_IconStar:Show()
-		AM_LockIcon:Show()
-		AM_IconFrame:Show()
-	
-		AM_FlareWhite:Show()
-		AM_FlareRed:Show()
-		AM_FlareBlue:Show()
-		AM_FlareSilver:Show()
-		AM_FlareGreen:Show()
-		AM_FlarePurple:Show()
-		AM_FlareOrange:Show()
-		AM_FlareYellow:Show()
-		AM_FlareClear:Show()
-		AM_FlareFrame:Show()
-		
-		AM_ConsoleFrame:Show()
-		AM_ReadyCheck:Show()
-		AM_Pull:Show()
-		AM_Break:Show()
+    AbsMarks:Show()
+    AbsFlares:Show()
+    AM_ConsoleFrame:Show()
 	end
 end
 
@@ -424,8 +330,8 @@ end
 
 function AM_SetPositions()
 	if (Defaults.MarkersX ~= nil) then
---		AM_mainFrame:ClearAllPoints()
---		AM_Flares_mainFrame:ClearAllPoints()
+		AM_mainFrame:ClearAllPoints()
+		AM_Flares_mainFrame:ClearAllPoints()
 		AM_mainFrame:SetPoint(Defaults.MarkersAP, UIParent, Defaults.MarkersX, Defaults.MarkersY)
 		AM_Flares_mainFrame:SetPoint(Defaults.FlaresAP, UIParent, Defaults.FlaresX, Defaults.FlaresY)
 		AM_CheckUpdater()
